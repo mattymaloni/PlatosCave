@@ -695,5 +695,8 @@ def handle_disconnect():
     reset_browser_session()
 
 if __name__ == '__main__':
-    socketio.run(app, port=5000, debug=True)
+    print('[SERVER] Starting Flask-SocketIO server on http://0.0.0.0:5000', flush=True)
+    print('[SERVER] CORS enabled for all origins', flush=True)
+    print('[SERVER] Using eventlet for async operations', flush=True)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
 

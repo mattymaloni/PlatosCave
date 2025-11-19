@@ -51,8 +51,34 @@ const IndexPage = () => {
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
-    const socket: Socket = io('http://localhost:5000');
-    socket.on('connect', () => console.log('Connected to WebSocket server!'));
+    const socket: Socket = io('http://localhost:5000', {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      transports: ['polling', 'websocket'],
+      upgrade: true,
+      withCredentials: false,
+      autoConnect: true
+    });
+
+    socket.on('connect', () => {
+      console.log('✓ Connected to WebSocket server!');
+      console.log('Socket ID:', socket.id);
+    });
+
+    socket.on('connect_error', (error) => {
+      console.error('✗ Socket connection error:', error.message);
+      console.error('Error details:', error);
+    });
+
+    socket.on('error', (error) => {
+      console.error('✗ Socket error:', error);
+    });
+
+    socket.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+    });
 
     socket.on('status_update', (msg: { data: string }) => {
       try {
@@ -78,7 +104,9 @@ const IndexPage = () => {
       }
     });
 
-    return () => socket.disconnect();
+    return () => {
+      socket.disconnect();
+    };
   }, [uploadedFile, submittedUrl]);
 
   const handleFileUpload = async (file: File) => {
