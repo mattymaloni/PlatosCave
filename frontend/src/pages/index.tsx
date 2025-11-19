@@ -51,7 +51,7 @@ const IndexPage = () => {
   useEffect(() => {
     if (!uploadedFile && !submittedUrl) return;
 
-    const socket: Socket = io('http://localhost:5000', {
+    const socket: Socket = io('http://localhost:5001', {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
@@ -123,7 +123,7 @@ const IndexPage = () => {
     setSubmittedUrl(null);
 
     try {
-      await axios.post('http://localhost:5000/api/upload', formData);
+      await axios.post('http://localhost:5001/api/upload', formData);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -137,7 +137,7 @@ const IndexPage = () => {
     setUploadedFile(null);
 
     try {
-      await axios.post('http://localhost:5000/api/analyze-url', { url, ...settings });
+      await axios.post('http://localhost:5001/api/analyze-url', { url, ...settings });
     } catch (error) {
       console.error('Error analyzing URL:', error);
     }
